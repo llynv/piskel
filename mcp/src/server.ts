@@ -5,6 +5,7 @@ import { registerDrawingTools } from "./tools/drawing.js";
 import { registerSessionTools } from "./tools/session.js";
 import { registerReadTools } from "./tools/reads.js";
 import { registerFrameTools } from "./tools/frames.js";
+import { registerLayerTools } from "./tools/layers.js";
 import { shutdown } from "./browser.js";
 
 async function main(): Promise<void> {
@@ -15,6 +16,7 @@ async function main(): Promise<void> {
   registerSessionTools(server);
   registerReadTools(server);
   registerFrameTools(server);
+  registerLayerTools(server);
 
   const cleanup = async () => {
     await shutdown();
