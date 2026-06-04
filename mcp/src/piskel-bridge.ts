@@ -191,3 +191,15 @@ export async function callController(
     { method, args }
   );
 }
+
+/** Undo the last change via the history service. */
+export async function undo(): Promise<boolean> {
+  const { page } = await getSession();
+  return page.evaluate(() => window.__piskelMcp.undo()) as Promise<boolean>;
+}
+
+/** Redo the last undone change via the history service. */
+export async function redo(): Promise<boolean> {
+  const { page } = await getSession();
+  return page.evaluate(() => window.__piskelMcp.redo()) as Promise<boolean>;
+}

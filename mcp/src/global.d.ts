@@ -31,6 +31,8 @@ declare global {
       exportFramePng: (scale: number, frame: number | null) => string;
       exportSpritesheetPng: (scale: number, columns: number | null) => string;
       exportGif: (scale: number, fps: number | null) => Promise<string>;
+      undo: () => boolean;
+      redo: () => boolean;
     };
   }
 }

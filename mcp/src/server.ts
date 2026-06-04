@@ -9,6 +9,7 @@ import { registerLayerTools } from "./tools/layers.js";
 import { registerColorTools } from "./tools/color.js";
 import { registerPersistenceTools } from "./tools/persistence.js";
 import { registerExportTools } from "./tools/export.js";
+import { registerHistoryTools } from "./tools/history.js";
 import { shutdown } from "./browser.js";
 
 async function main(): Promise<void> {
@@ -23,6 +24,7 @@ async function main(): Promise<void> {
   registerColorTools(server);
   registerPersistenceTools(server);
   registerExportTools(server);
+  registerHistoryTools(server);
 
   const cleanup = async () => {
     await shutdown();

@@ -308,6 +308,16 @@
           reject(e);
         }
       });
+    },
+
+    undo: function () {
+      window.pskl.app.historyService.undo();
+      return true;
+    },
+
+    redo: function () {
+      window.pskl.app.historyService.redo();
+      return true;
     }
   };
 })();
