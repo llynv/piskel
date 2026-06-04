@@ -39,7 +39,7 @@ See the design spec at `docs/superpowers/specs/2026-06-04-piskel-mcp-server-desi
 - `fill_rect` — draw a filled rectangle. Args: `x`, `y`, `w`, `h`, `color`.
 - `draw_ellipse` — draw an ellipse outline or filled within the bounding box `(x,y,w,h)`. Args: `x`, `y`, `w`, `h`, `color`, `fill?`.
 - `flood_fill` — paint-bucket fill starting from `(x,y)`. Args: `x`, `y`, `color`.
-- `clear` — clear the whole current frame, or an optional rectangular area. Args: `x?`, `y?`, `w?`, `h?`.
+- `clear` — clear the whole current frame, or an optional rectangular area. Args: `area?` (an object `{ x, y, w, h }`). Omit `area` to clear the entire frame.
 
 ### Reads
 - `get_pixel` — get the hex color at `(x,y)`. Args: `x`, `y`, `layer?`, `frame?`.

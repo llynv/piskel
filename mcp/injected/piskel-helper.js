@@ -98,10 +98,14 @@
     },
 
     previewDataUrl: function (scale, layerIndex, frameIndex) {
-      var piskel = pc().getPiskel();
-      var li = layerIndex == null ? pc().getCurrentLayerIndex() : layerIndex;
       var fi = frameIndex == null ? pc().getCurrentFrameIndex() : frameIndex;
-      var frame = piskel.getLayerAt(li).getFrameAt(fi);
+      // No explicit layer: preview the merged composite so it matches export.
+      if (layerIndex == null) {
+        return this.renderFrameCanvas_(fi, scale).toDataURL();
+      }
+      // Explicit layer: inspect that single layer in isolation.
+      var piskel = pc().getPiskel();
+      var frame = piskel.getLayerAt(layerIndex).getFrameAt(fi);
       var renderer = new window.pskl.rendering.CanvasRenderer(
         frame,
         scale || 1
