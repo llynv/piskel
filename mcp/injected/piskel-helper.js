@@ -108,6 +108,34 @@
       );
       renderer.drawTransparentAs(window.Constants.TRANSPARENT_COLOR);
       return renderer.render().toDataURL();
+    },
+
+    getPalette: function () {
+      var piskel = pc().getPiskel();
+      var used = {};
+      piskel.getLayers().forEach(function (layer) {
+        layer.getFrames().forEach(function (frame) {
+          frame.forEachPixel(function (color) {
+            if (color !== 0) {
+              used[color] = true;
+            }
+          });
+        });
+      });
+      return Object.keys(used).map(Number);
+    },
+
+    setPrimaryColor: function (hex) {
+      try {
+        var jq = window.$ || window.jQuery;
+        if (jq && window.Events && window.Events.SELECT_PRIMARY_COLOR) {
+          jq.publish(window.Events.SELECT_PRIMARY_COLOR, [hex]);
+          return true;
+        }
+      } catch (_e) {
+        // Convenience only; fall through to false on any failure.
+      }
+      return false;
     }
   };
 })();

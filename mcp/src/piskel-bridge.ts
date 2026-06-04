@@ -116,6 +116,21 @@ export async function previewPng(
   return dataUrl.replace(/^data:image\/png;base64,/, "");
 }
 
+export async function getPalette(): Promise<number[]> {
+  const { page } = await getSession();
+  return page.evaluate(() => window.__piskelMcp.getPalette()) as Promise<
+    number[]
+  >;
+}
+
+export async function setPrimaryColor(hex: string): Promise<boolean> {
+  const { page } = await getSession();
+  return page.evaluate(
+    (h) => window.__piskelMcp.setPrimaryColor(h),
+    hex
+  ) as Promise<boolean>;
+}
+
 /** Pattern B: call a wrapped public controller method by name. */
 export async function callController(
   method: string,

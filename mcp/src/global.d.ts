@@ -24,6 +24,8 @@ declare global {
         layer: number | null,
         frame: number | null
       ) => string;
+      getPalette: () => number[];
+      setPrimaryColor: (hex: string) => boolean;
     };
   }
 }
