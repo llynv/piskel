@@ -28,6 +28,9 @@ declare global {
       setPrimaryColor: (hex: string) => boolean;
       serialize: () => string;
       loadFromString: (data: string) => Promise<boolean>;
+      exportFramePng: (scale: number, frame: number | null) => string;
+      exportSpritesheetPng: (scale: number, columns: number | null) => string;
+      exportGif: (scale: number, fps: number | null) => Promise<string>;
     };
   }
 }

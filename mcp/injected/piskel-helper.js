@@ -162,6 +162,152 @@
           reject(e);
         }
       });
+    },
+
+    // Render one frame (all visible layers merged) to a scaled canvas using
+    // the proven off-DOM CanvasRenderer, returning a PNG data URL.
+    renderFrameCanvas_: function (frameIndex, scale) {
+      var piskel = pc().getPiskel();
+      var fi = frameIndex == null ? pc().getCurrentFrameIndex() : frameIndex;
+      var merged = window.pskl.utils.LayerUtils.mergeFrameAt(
+        piskel.getLayers(),
+        fi
+      );
+      var renderer = new window.pskl.rendering.CanvasRenderer(
+        merged,
+        scale || 1
+      );
+      renderer.drawTransparentAs(window.Constants.TRANSPARENT_COLOR);
+      return renderer.render();
+    },
+
+    exportFramePng: function (scale, frameIndex) {
+      return this.renderFrameCanvas_(frameIndex, scale).toDataURL();
+    },
+
+    // Composite every frame onto a single grid canvas (in-page) and return a
+    // PNG data URL. columns defaults to the frame count (one row).
+    exportSpritesheetPng: function (scale, columns) {
+      var count = pc().getFrameCount();
+      var s = scale || 1;
+      var cols = columns || count;
+      if (cols < 1) {
+        cols = 1;
+      }
+      var rows = Math.ceil(count / cols);
+      var first = this.renderFrameCanvas_(0, s);
+      var fw = first.width;
+      var fh = first.height;
+      var sheet = document.createElement("canvas");
+      sheet.width = fw * cols;
+      sheet.height = fh * rows;
+      var ctx = sheet.getContext("2d");
+      ctx.imageSmoothingEnabled = false;
+      for (var i = 0; i < count; i++) {
+        var canvas = i === 0 ? first : this.renderFrameCanvas_(i, s);
+        var px = (i % cols) * fw;
+        var py = Math.floor(i / cols) * fh;
+        ctx.drawImage(canvas, px, py);
+      }
+      return sheet.toDataURL();
+    },
+
+    // Encode all frames into an animated GIF using Piskel's in-page gif.js
+    // encoder. Returns a Promise resolving to a data URL (image/gif).
+    exportGif: function (scale, fps) {
+      return new Promise(function (resolve, reject) {
+        try {
+          if (typeof window.GIF !== "function") {
+            reject(new Error("window.GIF encoder is not available"));
+            return;
+          }
+          if (!window.GifWorkerURL) {
+            reject(new Error("GIF worker URL is not available"));
+            return;
+          }
+          var zoom = scale || 1;
+          var rate = fps || pc().getFPS() || 12;
+          var piskel = pc().getPiskel();
+          var width = piskel.getWidth();
+          var height = piskel.getHeight();
+          var count = pc().getFrameCount();
+          var WHITE = "#ffffff";
+
+          var gif = new window.GIF({
+            workers: 2,
+            quality: 1,
+            width: width * zoom,
+            height: height * zoom,
+            repeat: 0,
+            transparent: null,
+            workerScript: window.GifWorkerURL
+          });
+
+          // Flatten each frame onto a white background, then scale.
+          var background = document.createElement("canvas");
+          background.width = width;
+          background.height = height;
+          var bgCtx = background.getContext("2d");
+
+          for (var i = 0; i < count; i++) {
+            var render = pc().renderFrameAt(i, true);
+            bgCtx.clearRect(0, 0, width, height);
+            bgCtx.fillStyle = WHITE;
+            bgCtx.fillRect(0, 0, width, height);
+            bgCtx.drawImage(render, 0, 0, width, height);
+
+            var scaled = document.createElement("canvas");
+            scaled.width = width * zoom;
+            scaled.height = height * zoom;
+            var sctx = scaled.getContext("2d");
+            sctx.imageSmoothingEnabled = false;
+            sctx.drawImage(background, 0, 0, scaled.width, scaled.height);
+
+            gif.addFrame(scaled.getContext("2d"), { delay: 1000 / rate });
+          }
+
+          var settled = false;
+          var timer = setTimeout(function () {
+            if (!settled) {
+              settled = true;
+              try {
+                gif.abort();
+              } catch (_e) {
+                /* ignore */
+              }
+              reject(new Error("GIF encoding timed out"));
+            }
+          }, 60000);
+
+          gif.on("finished", function (blob) {
+            if (settled) {
+              return;
+            }
+            settled = true;
+            clearTimeout(timer);
+            var reader = new FileReader();
+            reader.onload = function () {
+              resolve(reader.result);
+            };
+            reader.onerror = function () {
+              reject(new Error("Failed to read GIF blob"));
+            };
+            reader.readAsDataURL(blob);
+          });
+          gif.on("abort", function () {
+            if (settled) {
+              return;
+            }
+            settled = true;
+            clearTimeout(timer);
+            reject(new Error("GIF encoding aborted"));
+          });
+
+          gif.render();
+        } catch (e) {
+          reject(e);
+        }
+      });
     }
   };
 })();

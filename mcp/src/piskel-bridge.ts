@@ -116,6 +116,42 @@ export async function previewPng(
   return dataUrl.replace(/^data:image\/png;base64,/, "");
 }
 
+/** Render one frame (all layers merged) as a base64 PNG. */
+export async function renderPng(
+  scale: number,
+  frame?: number
+): Promise<string> {
+  const { page } = await getSession();
+  const dataUrl = (await page.evaluate(
+    (a) => window.__piskelMcp.exportFramePng(a.scale, a.frame ?? null),
+    { scale, frame }
+  )) as string;
+  return dataUrl.replace(/^data:image\/png;base64,/, "");
+}
+
+/** Composite all frames into a sprite-sheet, returned as a base64 PNG. */
+export async function renderSpritesheet(
+  scale: number,
+  columns?: number
+): Promise<string> {
+  const { page } = await getSession();
+  const dataUrl = (await page.evaluate(
+    (a) => window.__piskelMcp.exportSpritesheetPng(a.scale, a.columns ?? null),
+    { scale, columns }
+  )) as string;
+  return dataUrl.replace(/^data:image\/png;base64,/, "");
+}
+
+/** Encode all frames into an animated GIF, returned as base64 GIF data. */
+export async function renderGif(scale: number, fps?: number): Promise<string> {
+  const { page } = await getSession();
+  const dataUrl = (await page.evaluate(
+    (a) => window.__piskelMcp.exportGif(a.scale, a.fps ?? null),
+    { scale, fps }
+  )) as string;
+  return dataUrl.replace(/^data:image\/gif;base64,/, "");
+}
+
 export async function getPalette(): Promise<number[]> {
   const { page } = await getSession();
   return page.evaluate(() => window.__piskelMcp.getPalette()) as Promise<
