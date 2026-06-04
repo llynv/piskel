@@ -131,6 +131,16 @@ export async function setPrimaryColor(hex: string): Promise<boolean> {
   ) as Promise<boolean>;
 }
 
+export async function serializePiskel(): Promise<string> {
+  const { page } = await getSession();
+  return page.evaluate(() => window.__piskelMcp.serialize()) as Promise<string>;
+}
+
+export async function loadPiskelString(data: string): Promise<void> {
+  const { page } = await getSession();
+  await page.evaluate((d) => window.__piskelMcp.loadFromString(d), data);
+}
+
 /** Pattern B: call a wrapped public controller method by name. */
 export async function callController(
   method: string,

@@ -136,6 +136,32 @@
         // Convenience only; fall through to false on any failure.
       }
       return false;
+    },
+
+    serialize: function () {
+      return window.pskl.utils.serialization.Serializer.serialize(
+        pc().getPiskel()
+      );
+    },
+
+    loadFromString: function (data) {
+      return new Promise(function (resolve, reject) {
+        try {
+          var parsed = typeof data === "string" ? JSON.parse(data) : data;
+          window.pskl.utils.serialization.Deserializer.deserialize(
+            parsed,
+            function (piskel) {
+              pc().setPiskel(piskel);
+              resolve(true);
+            },
+            function (e) {
+              reject(e);
+            }
+          );
+        } catch (e) {
+          reject(e);
+        }
+      });
     }
   };
 })();

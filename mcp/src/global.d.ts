@@ -26,6 +26,8 @@ declare global {
       ) => string;
       getPalette: () => number[];
       setPrimaryColor: (hex: string) => boolean;
+      serialize: () => string;
+      loadFromString: (data: string) => Promise<boolean>;
     };
   }
 }
