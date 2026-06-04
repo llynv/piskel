@@ -13,7 +13,10 @@ const GridSchema = z.object({
 export function registerReadTools(server: McpServer): void {
   server.registerTool(
     "get_pixel",
-    { description: "Get the hex color at (x,y).", inputSchema: GetPixelSchema.shape },
+    {
+      description: "Get the hex color at (x,y).",
+      inputSchema: GetPixelSchema.shape
+    },
     async (args) => {
       const a = GetPixelSchema.parse(args);
       const value = await bridge.getPixelInt(a.x, a.y, a.layer, a.frame);
@@ -23,7 +26,11 @@ export function registerReadTools(server: McpServer): void {
 
   server.registerTool(
     "get_grid",
-    { description: "Return the frame as a 2D grid of hex colors (best for small canvases).", inputSchema: GridSchema.shape },
+    {
+      description:
+        "Return the frame as a 2D grid of hex colors (best for small canvases).",
+      inputSchema: GridSchema.shape
+    },
     async (args) => {
       const a = GridSchema.parse(args);
       const info = await bridge.getCanvasInfo();

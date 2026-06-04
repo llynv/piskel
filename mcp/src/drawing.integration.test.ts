@@ -1,13 +1,22 @@
 // mcp/src/drawing.integration.test.ts
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
-import { newCanvas, applyPixels, floodFill, getPixelInt } from "./piskel-bridge.js";
+import {
+  newCanvas,
+  applyPixels,
+  floodFill,
+  getPixelInt
+} from "./piskel-bridge.js";
 import { line, rect } from "./geometry.js";
 import { shutdown } from "./browser.js";
 import { hexToInt } from "./color.js";
 
 describe("drawing integration", () => {
-  beforeAll(async () => { await newCanvas(8, 8, "draw", 12); });
-  afterAll(async () => { await shutdown(); });
+  beforeAll(async () => {
+    await newCanvas(8, 8, "draw", 12);
+  });
+  afterAll(async () => {
+    await shutdown();
+  });
 
   it("draws a line via geometry + applyPixels", async () => {
     const pts = line(0, 0, 3, 0).map((p) => ({ ...p, color: "#00FF00" }));
