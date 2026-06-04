@@ -83,24 +83,24 @@
         name: piskel.getDescriptor().name,
         layerCount: piskel.getLayers().length,
         frameCount: pc().getFrameCount(),
-        currentLayer: pc().currentLayerIndex,
-        currentFrame: pc().currentFrameIndex,
+        currentLayer: pc().getCurrentLayerIndex(),
+        currentFrame: pc().getCurrentFrameIndex(),
         layers: layers
       };
     },
 
     getPixelHex: function (x, y, layerIndex, frameIndex) {
       var piskel = pc().getPiskel();
-      var li = layerIndex == null ? pc().currentLayerIndex : layerIndex;
-      var fi = frameIndex == null ? pc().currentFrameIndex : frameIndex;
+      var li = layerIndex == null ? pc().getCurrentLayerIndex() : layerIndex;
+      var fi = frameIndex == null ? pc().getCurrentFrameIndex() : frameIndex;
       var frame = piskel.getLayerAt(li).getFrameAt(fi);
       return frame.getPixel(x, y);
     },
 
     previewDataUrl: function (scale, layerIndex, frameIndex) {
       var piskel = pc().getPiskel();
-      var li = layerIndex == null ? pc().currentLayerIndex : layerIndex;
-      var fi = frameIndex == null ? pc().currentFrameIndex : frameIndex;
+      var li = layerIndex == null ? pc().getCurrentLayerIndex() : layerIndex;
+      var fi = frameIndex == null ? pc().getCurrentFrameIndex() : frameIndex;
       var frame = piskel.getLayerAt(li).getFrameAt(fi);
       var renderer = new window.pskl.rendering.CanvasRenderer(
         frame,
