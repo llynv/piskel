@@ -1,0 +1,26 @@
+{
+  "name": "piskel-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "piskel-mcp": "./dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "start": "node dist/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "puppeteer": "24.40.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "vitest": "^2.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
