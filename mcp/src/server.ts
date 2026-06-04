@@ -3,6 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { registerCanvasTools } from "./tools/canvas.js";
 import { registerDrawingTools } from "./tools/drawing.js";
 import { registerSessionTools } from "./tools/session.js";
+import { registerReadTools } from "./tools/reads.js";
 import { shutdown } from "./browser.js";
 
 async function main(): Promise<void> {
@@ -11,6 +12,7 @@ async function main(): Promise<void> {
   registerCanvasTools(server);
   registerDrawingTools(server);
   registerSessionTools(server);
+  registerReadTools(server);
 
   const cleanup = async () => {
     await shutdown();
